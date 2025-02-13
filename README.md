@@ -1,18 +1,20 @@
-# Somatic TEI Detection Pipeline
+# TGS_somatic_TEI
 
 ## Overview
 
-This pipeline is designed to identify and refine **somatic transposable element insertions (TEIs)** with high confidence. It integrates a series of tools and custom scripts to detect, correct, and annotate somatic structural variants (SVs), particularly large-scale insertions (INSs) and duplications (DUPs), focusing on transposable elements (TEs). The pipeline leverages **Sniffles2**, **Iris**, **Racon**, **RepeatMasker**, **Tandem Repeat Finder**, and **Sdust** to ensure high accuracy and reliability in somatic TEI identification.
+This pipeline is designed to identify and refine **somatic transposable element insertions (TEIs)** with high confidence. It integrates a series of tools and custom scripts to detect, correct, and annotate somatic structural variants (SVs), particularly large-scale insertions (INSs) and duplications (DUPs), focusing on transposable elements (TEs).
+
 ## Pipeline Workflow
 
 The pipeline consists of the following key steps:
-### Step 1: Merging Alignments and Detect Somatic Large-Scale Insertions
+### Step 1: Merge bam and Detect Somatic Large-Scale Insertions
 
-- Merge the alignments of **tumor samples** with their paired **blood samples**.
-- Use **Sniffles2** to detect large-scale insertions (INSs) (>50 bp) from the merged alignments.
+- Merge BAM files of paired **tumor** and **blood** samples.
+- Use **Sniffles2** to detect large-scale insertions (INSs) (>50 bp) from the merged BAM.
 - A somatic INS is considered valid if:
     - It has **>3 supporting reads** from the tumor sample.
     - It has **no supporting reads** from the paired blood sample.
+
 ### Step 2: Additional Screening for High-confidence SVs
 
 - SV positions were restricted to a standard deviation of less than 150 bp
@@ -22,7 +24,7 @@ The pipeline consists of the following key steps:
         A.mean(Lengtha) - 2 * STRI(Lengtha) <= Lengths <= mean(Lengtha) + 2 * STRI(Lengtha)
         B.Q1 - 1.5 * IQR <= Length <= Q3 + 1.5 * IQR
         ```
-- Assess SVs in repeat regions for significant length differences between tumor and blood alignments, retaining only those exhibiting clear distinctions.
+- Assess SVs in repeat regions for significant length differences between tumor and blood, retaining only those exhibiting clear distinctions.
 ### Step 3: SV Correction And Annotation
 
 - Use **Iris** (version 1.0.4) to correct the positions and sequences of somatic SVs (INSs and DUPs)
